@@ -1,38 +1,58 @@
-#todo(kobi): consider moving Controller to generic_project, or changing the (future) mixins to simple classes.
-
 use CommonData
-use GenericProject
+use VariantMvc
 
-
-namespace VariantMvc
+namespace GenericProject
 
 class Controller implements IControllerSpec
-	adds ManageProfiling, ManageLogReplay, ManageHistory, ManagePersistence
+	
+	# roles:
+	var _profiler as IRole = ManageProfiling()
+	var _replayer as IRole= ManageLogReplay()
+	var _historian as IRole= ManageHistory()
+	var _resumer as IRole= ManagePersistence()
+	
+	var _roles as List<of IRole>
+	get roles from var
 	
 	var _views = List<of IView>()
 	var _opts = Options.Unknown
 	
+	cue init(view as IView)
+		.init(view, Options.Unknown)
+		
 	cue init(view as IView, options as Options)
 		base.init		
 		_opts = options
 		.attachView(view)
+		_roles =  [ _profiler, _replayer, _historian, _resumer ]
 	
 	def attachView(v1 as IView)
-		.checkNotationsMatch(v1)
 		if not _views.contains(v1), _views.add(v1)
 		
 	def detachView(v1 as IView)
 		if _views.contains(v1), _views.remove(v1)
 		
+	def notifyViews(note as String)
+		for v in _views, v.notify(note)
 	
-	def beforeAction(args as String)
+	def sendErrToViews(err as String)
+		pass
+	
+	def updateAllViews
+		pass
+	
+	def beforeAction(args as ParsedCommand)
 		pass
 		
-	def afterAction(args as String)
+	def afterAction(args as ParsedCommand)
 		pass
 		
-	def	customAction(args as String)
-		.decide_action(args)
+	def customAction(args as ParsedCommand) as Response
+		return .decide_action(args)
 		
-	def decide_action(cmd_and_args as String)
-		pass
+	def decide_action(cmd_and_args as ParsedCommand) as Response
+		throw NotImplementedException()
+		
+		
+		
+# if has flags x, do x... before, custom, or after. depending on the role.

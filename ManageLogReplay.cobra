@@ -1,4 +1,10 @@
+use VariantMvc
 namespace GenericProject
 
-mixin ManageLogReplay
-	pass
+class ManageLogReplay implements IRole
+
+	get tasked_with as String
+		return "reproducing a user's state by replaying all the entered commands"
+		
+	def checkFeasability
+		pass

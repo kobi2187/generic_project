@@ -1,4 +1,10 @@
+use VariantMvc
 namespace GenericProject
 
-mixin ManagePersistence
-	pass
+class ManagePersistence implements IRole
+
+	get tasked_with as String
+		return "optionally resuming on startup, the application's previous state (before closing or crashing)"
+		
+	def checkFeasability
+		pass

@@ -41,4 +41,7 @@
       <Name>variant_mvc</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="changelog.txt" />
+  </ItemGroup>
 </Project>

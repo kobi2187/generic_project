@@ -1,0 +1,23 @@
+Changelog
+=========
+
+
+
+currently
+=========
+
+
+
+=====
+add parsing the command format into a struct, command:String, subCommands:List<string>, Dict<of opt:String,value:String>
+move all ctrl's methods to be static functions: free the inheritance slot for future controllers.
+add lastCommand
+add showError(string) to IView
+add enum for applicationPart (from where the error came)
+try mixin collision
+do simple experiments with bamboo prevalence, wrt persistence.
+ManageSettings mixin
+	probably a Settings class + something like a hashtable? .... see use cases, see nini, think freshly on this.
+	to use with controller
+cook something for external text resources.. with nini, or json.net
+	to fill models with data
