@@ -1,0 +1,2 @@
+generic_project
+===============
