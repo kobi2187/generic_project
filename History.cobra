@@ -1,0 +1,18 @@
+namespace GenericProject
+
+class History
+	"""
+	keeps a log of all the commands passed to the controller,
+	helps in reproducing a problem, can serve as undo/redo mechanism (undo is redoing from last saved state all the commands -1) , can serve for replaying, or persistency.
+	resuming the session where you left off, even after shutting down the program (optional)
+	"""
+
+	test
+		pass
+
+	cue init
+		base.init
+		
+	var _history = LinkedList<of HistoryItem>()
+	
+		

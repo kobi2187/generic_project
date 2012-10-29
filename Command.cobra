@@ -1,0 +1,13 @@
+namespace GenericProject
+
+class Command inherits HistoryItem
+	var _isLogged = false # as bool 
+	get isLogged from _isLogged
+	var _fullCmd as String
+	
+	cue init(cmd as String)
+		base.init
+		_fullCmd = cmd
+	
+	def setLogged
+		_isLogged=true

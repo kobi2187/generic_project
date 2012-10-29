@@ -1,0 +1,4 @@
+namespace GenericProject	
+		
+class State inherits HistoryItem
+	pass

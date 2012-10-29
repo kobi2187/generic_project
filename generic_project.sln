@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{0A906CA0-EF87-4D08-9CA7-C8380245B3FF}") = "generic_project", "generic_project.cobraproj", "{B2B38FE2-C4CB-48F9-B14B-40543B0B7D5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2B38FE2-C4CB-48F9-B14B-40543B0B7D5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B38FE2-C4CB-48F9-B14B-40543B0B7D5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B38FE2-C4CB-48F9-B14B-40543B0B7D5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B38FE2-C4CB-48F9-B14B-40543B0B7D5A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = generic_project.cobraproj
+	EndGlobalSection
+EndGlobal

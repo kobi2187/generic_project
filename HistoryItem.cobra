@@ -1,0 +1,15 @@
+namespace GenericProject
+
+class HistoryItem
+	
+	var counter as uint = 0 
+		is shared
+		
+	var _countIndex as uint
+	get countIndex from _countIndex
+	
+	cue init
+		base.init
+		HistoryItem.counter += 1
+		_countIndex = .counter
+	

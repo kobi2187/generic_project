@@ -1,0 +1,4 @@
+#namespace GenericProject
+
+mixin ManageProfiling
+	pass
