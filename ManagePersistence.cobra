@@ -1,4 +1,4 @@
-#namespace GenericProject
+namespace GenericProject
 
 mixin ManagePersistence
 	pass

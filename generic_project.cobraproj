@@ -33,5 +33,12 @@
     <Compile Include="History.cobra" />
     <Compile Include="HistoryItem.cobra" />
     <Compile Include="State.cobra" />
+    <Compile Include="Controller.cobra" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\variant_mvc\variant_mvc.cobraproj">
+      <Project>{D6721A2D-3687-4C71-9954-FF01516CCDDE}</Project>
+      <Name>variant_mvc</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
