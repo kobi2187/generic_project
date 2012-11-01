@@ -7,17 +7,10 @@ use GenericProject
 namespace VariantMvc
 
 class Controller implements IControllerSpec
+	adds ManageProfiling, ManageLogReplay, ManageHistory, ManagePersistence
 	
 	var _views = List<of IView>()
 	var _opts = Options.Unknown
-	
-
-	var _profiler as ManageProfiling
-	var _logRecorder as ManageLogReplay
-	var _undoRecorder as ManageHistory
-	var _resumer as ManagePersistence
-
-	
 	
 	cue init(view as IView, options as Options)
 		base.init		
@@ -25,7 +18,7 @@ class Controller implements IControllerSpec
 		.attachView(view)
 	
 	def attachView(v1 as IView)
-	#todo(kobi): assert here the notation_version's in view vs models - a fail fast for the view to know about a notation update.
+		.checkNotationsMatch(v1)
 		if not _views.contains(v1), _views.add(v1)
 		
 	def detachView(v1 as IView)
@@ -43,4 +36,3 @@ class Controller implements IControllerSpec
 		
 	def decide_action(cmd_and_args as String)
 		pass
-	
