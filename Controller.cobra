@@ -1,5 +1,6 @@
 use CommonData
 use VariantMvc
+use System
 
 namespace GenericProject
 
@@ -15,16 +16,22 @@ class Controller implements IControllerSpec
 	get roles from var
 	
 	var _views = List<of IView>()
-	var _opts = Options.Unknown
+	var _opts = Options.None
 	
 	cue init(view as IView)
-		.init(view, Options.Unknown)
+		.init(view, Options.None)
 		
 	cue init(view as IView, options as Options)
-		base.init		
+		base.init
 		_opts = options
 		.attachView(view)
+		if _opts.hasFlag(Options.Profile)
+			listen ManageProfiling.reachedLimit, ref .doSaveState
+			
 		_roles =  [ _profiler, _replayer, _historian, _resumer ]
+	
+	def doSaveState
+		pass
 	
 	def attachView(v1 as IView)
 		if not _views.contains(v1), _views.add(v1)
@@ -40,19 +47,35 @@ class Controller implements IControllerSpec
 	
 	def updateAllViews
 		pass
-	
+
 	def beforeAction(args as ParsedCommand)
-		pass
+		# .log(args.toString)
+		.profileCmdEntry #hmm.. how to sync between cmd entry and cmd exit?? not overwriting the data?
+						 # oh, I can use yield. is there yield in cobra? is it thread-safe/async-safe? the prev value has to be for the same function.
 		
 	def afterAction(args as ParsedCommand)
-		pass
+		if _opts.hasFlag(Options.Profile)
+			.profileCmdExit
+		
 		
 	def customAction(args as ParsedCommand) as Response
 		return .decide_action(args)
 		
 	def decide_action(cmd_and_args as ParsedCommand) as Response
 		throw NotImplementedException()
-		
-		
+	
+# with the idea that the user gets an IController, but the controller implements both IController and IControllerSpec
+# then we can use words from the spec, while the user sees just words from the IController interface. -kind of twisted but hopefully nicer api.
+
+/# obsolete. a bit modified, found its place as an IController extension
+	def performAction(cmd as String) as Response
+		assert ParsedCommand.isValid(cmd)
+		parsed = Utils.parseCommand(cmd)
+		lock this
+			.beforeAction(parsed)
+			res = .customAction(parsed)
+			.afterAction(parsed)
+			return res
+#/		
 		
 # if has flags x, do x... before, custom, or after. depending on the role.

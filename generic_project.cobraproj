@@ -34,6 +34,8 @@
     <Compile Include="HistoryItem.cobra" />
     <Compile Include="State.cobra" />
     <Compile Include="Controller.cobra" />
+    <Compile Include="ManageLogging.cobra" />
+    <Compile Include="Times.cobra" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\variant_mvc\variant_mvc.cobraproj">

@@ -1,15 +1,12 @@
-use VariantMvc
-use Profiling
+namespace Profiling
 
-namespace GenericProject
-
-class ManageProfiling implements IRole
+class Profile
 	"""
 	ManagesProfiling, and optionally raises an event when threshold reached.
 	"""
 
 	test
-		p = ManageProfiling()
+		p = Profile()
 		p.addElapsedMs("h",3)
 		p.addElapsedMs("h",7)
 		p.addElapsedMs("h",0.1)
@@ -24,6 +21,7 @@ class ManageProfiling implements IRole
 		assert p.timeStats("h").count == 4
 		assert p.timeStats("h").average == 80.1/4
 		
+
 	
 	var _thresholdCmdCount as uint64
 	var _thresholdTimeSum as number 
@@ -34,13 +32,13 @@ class ManageProfiling implements IRole
 	pro _stateSavingTime from var as Times
 	
 	sig LimitReachedHandler
-	event reachedLimit as LimitReachedHandler is shared
+	event reachedLimit as LimitReachedHandler
 		
 	cue init
 		base.init
 		_profileDict = Dictionary<of String, Times>()
-		_thresholdCmdCount = 50  #[n]  # a default number: after how many commands to save a state.
-		_thresholdTimeSum  = 200 #[ms] # a default number: responsiveness, how long to wait for undo.
+		_thresholdCmdCount = 50 # a default number: responsiveness, after how many commands to save a state.
+		_thresholdTimeSum  = 200 # a default number: responsiveness, how long to wait for undo.
 		_stateSavingTime = Times("saveState")
 	
 	cue init(thresholdCmdCount as uint64, thresholdTimeSum as number)
@@ -87,18 +85,3 @@ class ManageProfiling implements IRole
 			return _profileDict[cmd]
 		else
 			return nil
-
-/# more helpers #/
-	var prevs = Dictionary<of Guid, DateTime>
-	
-	def profileCmdExit(id as Guid) as TimeSpan
-		return DateTime.now - prevs[id]
-		
-	def profileCmdEntry as Guid
-		id = Guid.newGuid
-		prevTime = DateTime.now
-		prevs.add(id,prevTime)
-		return id
-	
-
-	

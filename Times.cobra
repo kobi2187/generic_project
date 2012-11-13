@@ -1,0 +1,63 @@
+namespace Profiling
+
+class Times
+	test
+		t = Times("h")
+		t.addTime(3)
+		t.addTime(7)
+		t.addTime(0.1)
+		t.addTime(70)
+		
+		assert t.high == 70
+		assert t.low == 0.1
+		assert t.count == 4
+		assert t.average == 80.1/4
+	
+	get average as decimal?
+		if _low is nil or _high is nil
+			return nil
+		else
+			return _total/_count
+
+		
+	var _total as decimal
+	
+	get low from var as number?
+	get high from var as number?
+	get cmd from var as String
+	get count from var as uint64
+	
+	cue init(cmd as String)
+		base.init
+		
+		_low = nil
+		_high = nil
+		_count = 0
+		_total = 0
+		_cmd = cmd
+	
+	def addTime(ms as number)
+		ensure
+			_low is not nil
+			_low <= old _low
+			_high is not nil
+			_high >= old _high
+			_count > 0
+			_count == old _count + 1
+		body
+			_count += 1
+			_total += ms
+			
+			if _low is nil
+				_low = ms
+			else
+				if ms < _low
+					_low = ms # the new low
+			
+			if _high is nil
+				_high = ms
+			else
+				if ms > _high
+					_high = ms # the new high
+			
+		
