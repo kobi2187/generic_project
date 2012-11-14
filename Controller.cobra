@@ -4,7 +4,7 @@ use System
 
 namespace GenericProject
 
-class Controller implements IControllerSpec
+class Controller implements IControllerSpec is abstract
 	
 	# roles:
 	var _profiler as IRole = ManageProfiling()
