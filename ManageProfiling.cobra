@@ -3,7 +3,7 @@ use Profiling
 
 namespace GenericProject
 
-class ManageProfiling implements IRole
+mixin ManageProfiling
 	"""
 	ManagesProfiling, and optionally raises an event when threshold reached.
 	"""
@@ -25,28 +25,17 @@ class ManageProfiling implements IRole
 		assert p.timeStats("h").average == 80.1/4
 		
 	
-	var _thresholdCmdCount as uint64
-	var _thresholdTimeSum as number 
+	set cmdSumTimeLimit from _thresholdTimeSum as number 
+	set cmdCountLimit from _thresholdCmdCount as uint64
 	
 	get totalCount from var as uint64 
 	get totalSum from var as number
-	var _profileDict as Dictionary<of String, Times>
+	var _profileDict = Dictionary<of String, Times>()
 	pro _stateSavingTime from var as Times
 	
 	sig LimitReachedHandler
 	event reachedLimit as LimitReachedHandler is shared
 		
-	cue init
-		base.init
-		_profileDict = Dictionary<of String, Times>()
-		_thresholdCmdCount = 50  #[n]  # a default number: after how many commands to save a state.
-		_thresholdTimeSum  = 200 #[ms] # a default number: responsiveness, how long to wait for undo.
-		_stateSavingTime = Times("saveState")
-	
-	cue init(thresholdCmdCount as uint64, thresholdTimeSum as number)
-		.init
-		_thresholdCmdCount, _thresholdTimeSum = thresholdCmdCount, thresholdTimeSum
-	
 	def addElapsed(cmd as String, elapsed as TimeSpan)
 		ms = elapsed.totalMilliseconds to decimal
 		.addElapsedMs(cmd, ms)
@@ -65,6 +54,25 @@ class ManageProfiling implements IRole
 			.maybeReachLimit
 		
 		
+	var temp_store = Dictionary<of Guid, DateTime>()
+	def getsetProfile(cmd as ParsedCommand) as number? is private
+		"""uses the cmd's unique id, and a temporary hash with id as key."""
+		res as number? = nil
+		if .temp_store.containsKey(cmd.id)
+			now = DateTime.now
+			prev = .temp_store[cmd.id]
+			ts = now.subtract(prev)
+			res = ts.totalMilliseconds to number?
+		else
+			.temp_store.add(cmd.id,DateTime.now)
+		return res
+
+	def recordProfile(cmd as ParsedCommand)
+		res = .getsetProfile(cmd) # could be entry or exit
+		if res # if not nil
+			.addElapsedMs(cmd.toString, res)
+	
+
 	def addElapsedMs(cmd as String, elapsedMs as number)
 		require
 			elapsedMs >= 0

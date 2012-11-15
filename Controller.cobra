@@ -5,9 +5,9 @@ use System
 namespace GenericProject
 
 class Controller implements IControllerSpec is abstract
-	
+	adds ManageProfiling
 	# roles:
-	var _profiler as IRole = ManageProfiling()
+
 	var _replayer as IRole= ManageLogReplay()
 	var _historian as IRole= ManageHistory()
 	var _resumer as IRole= ManagePersistence()
@@ -28,7 +28,7 @@ class Controller implements IControllerSpec is abstract
 		if _opts.hasFlag(Options.Profile)
 			listen ManageProfiling.reachedLimit, ref .doSaveState
 			
-		_roles =  [ _profiler, _replayer, _historian, _resumer ]
+		_roles =  [ _replayer, _historian, _resumer ]
 	
 	def doSaveState
 		pass
@@ -50,12 +50,11 @@ class Controller implements IControllerSpec is abstract
 
 	def beforeAction(args as ParsedCommand)
 		# .log(args.toString)
-		.profileCmdEntry #hmm.. how to sync between cmd entry and cmd exit?? not overwriting the data?
-						 # oh, I can use yield. is there yield in cobra? is it thread-safe/async-safe? the prev value has to be for the same function.
+		.recordProfile(args)
 		
 	def afterAction(args as ParsedCommand)
-		if _opts.hasFlag(Options.Profile)
-			.profileCmdExit
+		#if _opts.hasFlag(Options.Profile)
+		.recordProfile(args)
 		
 		
 	def customAction(args as ParsedCommand) as Response
