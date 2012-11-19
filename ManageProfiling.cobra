@@ -2,13 +2,14 @@ use VariantMvc
 use Profiling
 
 namespace GenericProject
+sig LimitReachedHandler
 
 mixin ManageProfiling
 	"""
 	ManagesProfiling, and optionally raises an event when threshold reached.
 	"""
 
-	test
+/#	test
 		p = ManageProfiling()
 		p.addElapsedMs("h",3)
 		p.addElapsedMs("h",7)
@@ -24,17 +25,17 @@ mixin ManageProfiling
 		assert p.timeStats("h").count == 4
 		assert p.timeStats("h").average == 80.1/4
 		
-	
+#/	
 	set cmdSumTimeLimit from _thresholdTimeSum as number 
 	set cmdCountLimit from _thresholdCmdCount as uint64
 	
 	get totalCount from var as uint64 
 	get totalSum from var as number
 	var _profileDict = Dictionary<of String, Times>()
-	pro _stateSavingTime from var as Times
+	pro stateSavingTime from var as Times
 	
-	sig LimitReachedHandler
-	event reachedLimit as LimitReachedHandler is shared
+	event reachedLimit as LimitReachedHandler
+	
 		
 	def addElapsed(cmd as String, elapsed as TimeSpan)
 		ms = elapsed.totalMilliseconds to decimal
