@@ -4,16 +4,17 @@ use System
 
 namespace GenericProject
 
-class Controller implements IControllerSpec, IController is abstract
+class Controller<of TEnumParts> implements IControllerSpec<of TEnumParts>, IController<of TEnumParts> is abstract
 	adds ManageProfiling
 
 	def customBefore(args as ParsedCommand) is abstract
 	def customAction(args as ParsedCommand) as Response is abstract
 	def customAfter(args as ParsedCommand) is abstract
-	def load is abstract
-	def updateViews is abstract
-	def updateViewPart(part as String) is abstract
 	
+	def load is abstract
+	
+	def getDataForPart(part as TEnumParts) as SimpleData<of TEnumParts> is abstract
+		
 	event reachedLimit as LimitReachedHandler
 
 	# roles:
@@ -24,18 +25,41 @@ class Controller implements IControllerSpec, IController is abstract
 	
 	var _opts = Options.None
 	get roles from var as List<of IRole> 
-	get views from var as List<of IView> is protected
+	get views from var as List<of IView<of TEnumParts>> is protected
 	
+	def requestPartReload(part as TEnumParts)
+		partData = .getDataForPart(part)
+		.updateViewsPart(partData)
+	
+	def makePartsData as Dictionary<of TEnumParts, SimpleData<of TEnumParts>>
+		dict = Dictionary<of TEnumParts, SimpleData<of TEnumParts>>()
+		allParts = Enum.getValues(TEnumParts) to TEnumParts[]
+		trace allParts.getType
+		
+		for enumEntry in allParts
+			data = .getDataForPart(enumEntry)
+			simple = SimpleData<of TEnumParts>(enumEntry,data)
+			dict.add(enumEntry,simple)
+			
+		return dict
+	
+	def updateViews 
+		dict = .makePartsData
+		for k in dict.keys
+			val = dict[k]
+			.updateViewsPart(val)			
+	
+	def updateViewsPart(data as SimpleData<of TEnumParts>)
+		for v in _views
+			v.redrawPart(data)
+		
 	def requestReload
 		.updateViews
 		
-	def requestPartReload(part as String)
-		.updateViewPart(part)
-	
-	cue init(view as IView)
+	cue init(view as IView<of TEnumParts>)
 		.init(view, Options.None)
 		
-	cue init(view as IView, options as Options)
+	cue init(view as IView<of TEnumParts>, options as Options)
 		base.init
 		_opts = options
 		.attachView(view)
@@ -47,10 +71,10 @@ class Controller implements IControllerSpec, IController is abstract
 	def doSaveState
 		pass
 	
-	def attachView(v1 as IView)
+	def attachView(v1 as IView<of TEnumParts>)
 		if not _views.contains(v1), _views.add(v1)
 
-	def detachView(v1 as IView)
+	def detachView(v1 as IView<of TEnumParts>)
 		if _views.contains(v1), _views.remove(v1)
 		
 	def performAction(cmd as String) as Response
